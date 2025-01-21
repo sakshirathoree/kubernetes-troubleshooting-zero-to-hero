@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: argocd
+        image: sakshirathoree/argocd-course-webapp:4510b415d92e7ddb9271d2f2266010326fceb501
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: demo
