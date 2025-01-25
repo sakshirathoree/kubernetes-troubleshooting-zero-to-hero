@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      initContainers:
+      - name: redis-cli-installer
+        image: debian:stretch
+        command:
+          - "sh"
+          - "-c"
+          - "apt-get update && apt-get install -y redis-tools"
+        volumeMounts:
+          - name: tmp-volume
+            mountPath: /tmp
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: tmp-volume
+            mountPath: /tmp
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
